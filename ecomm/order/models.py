@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
-from django.db import models
+# from django.db import models
 # from django.db.models.signals import pre_save
 # from django.dispatch import receiver
 import uuid
@@ -12,20 +12,20 @@ def validate_product_name(value):
         raise ValidationError('Product name must be at least 3 characters long.')
 
 
+SHIPPING_STATUS = [
+    ('P', 'Pending'),
+    ('S', 'Shipped'),
+    ('D', 'Delivered'),
+]
 class Order(models.Model):
     
-    SHIPPING_STATUS = [
-        ('P', 'Pending'),
-        ('S', 'Shipped'),
-        ('D', 'Delivered'),
-    ]
     # user = models.ForeignKey(User, on_delete=models.CASCADE); // waiting for amany
-    product_name = models.CharField(max_length=20, validators=[validate_product_name])
+    product_name = models.CharField(max_length=20)
      
-    quantity = models.IntegerField(validators=[MinValueValidator(1)])
+    quantity = models.IntegerField()
     
     # search for transaction_id 
-    transaction_id= models.IntegerField(unique=True,null=False) 
+    transaction_id= models.IntegerField() 
     
     shipping = models.CharField(max_length=1, choices=SHIPPING_STATUS ,default='P', null=False)
     
