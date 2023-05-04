@@ -8,8 +8,6 @@ from rest_framework import status
 class productListAV(APIView):
     def get(self, request):
        products = Product.objects.all()
-      #  serializer = ProductSerializer(product, context={'request': request})
-
        serializer = ProductSerializer(products,many=True,context={'request': request})
        return Response(serializer.data)
    
