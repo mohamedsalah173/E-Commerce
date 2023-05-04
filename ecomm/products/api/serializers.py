@@ -18,12 +18,17 @@ def validate_image(value):
     if not value.content_type.startswith('image'):
         raise serializers.ValidationError("Image must be of type image/*")
         
-class ProductSerializer(serializers.ModelSerializer,HyperlinkedModelSerializer):
+class ProductSerializer(serializers.HyperlinkedModelSerializer):
+    image = serializers.ImageField(max_length=None,allow_empty_file=False,allow_null=True)
     name = serializers.CharField(max_length=50, required=True, validators=[validate_name])
     description = serializers.CharField(required=False)
     price = serializers.DecimalField(max_digits=11, decimal_places=2, required=True, validators=[MinValueValidator(0),MaxValueValidator(1000000000)])
-    image = serializers.ImageField(required=False, validators=[validate_image])
     is_active = serializers.BooleanField(required=False)
+    url = serializers.HyperlinkedIdentityField(
+        view_name='productDetailAV',
+        lookup_field='pk'
+    )
+    
     def validate(self, data):
         if 'name' in data and 'description' in data:
             validate_description(data['description'], data['name'])
