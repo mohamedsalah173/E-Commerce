@@ -8,11 +8,13 @@ from rest_framework import status
 class productListAV(APIView):
     def get(self, request):
        products = Product.objects.all()
-       serializer = ProductSerializer(products,many=True)
+      #  serializer = ProductSerializer(product, context={'request': request})
+
+       serializer = ProductSerializer(products,many=True,context={'request': request})
        return Response(serializer.data)
    
     def post(self, request):
-        serializer = ProductSerializer(data=request.data)
+        serializer = ProductSerializer(data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -25,7 +27,7 @@ class productDetailAV(APIView):
           product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ProductSerializer(product)
+        serializer = ProductSerializer(product,context={'request': request})
         return Response(serializer.data)
      
       def put(self,request,pk):
@@ -34,7 +36,7 @@ class productDetailAV(APIView):
            except Product.DoesNotExist:
              return Response(status=status.HTTP_404_NOT_FOUND)
     
-           serializer = ProductSerializer(product, data=request.data, partial=True)
+           serializer = ProductSerializer(product, data=request.data, partial=True,context={'request': request})
            if serializer.is_valid():
              serializer.save()
              return Response({'message': 'Product updated successfully'})
