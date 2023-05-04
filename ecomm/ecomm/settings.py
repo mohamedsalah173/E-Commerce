@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'order',
-    'rest_framework',
     
 ]
 
@@ -143,5 +142,4 @@ REST_FRAMEWORK = {
     'DEFAULTS': {
         'DEFAULT_PARTIAL_UPDATE': True,
     },
-    # other settings...
 }

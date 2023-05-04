@@ -23,12 +23,13 @@ class ProductSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=False)
     price = serializers.DecimalField(max_digits=11, decimal_places=2, required=True, validators=[MinValueValidator(0),MaxValueValidator(1000000000)])
     image = serializers.ImageField(required=False, validators=[validate_image])
-
+    is_active = serializers.BooleanField(required=False)
+    
     def validate(self, data):
         if 'name' in data and 'description' in data:
             validate_description(data['description'], data['name'])
+        data['is_active'] = data.get('stoke', 0) > 0
         return data
-
     
     class Meta:
         model = Product
