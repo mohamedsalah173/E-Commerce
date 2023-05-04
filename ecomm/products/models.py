@@ -10,7 +10,7 @@ class Product(models.Model):
   stoke=models.PositiveIntegerField()
   created_at=models.DateTimeField(auto_now_add=True,null=True,blank=True)
   updated_at=models.DateTimeField(auto_now=True,null=True,blank=True)
-  image=models.ImageField(upload_to='productsPhotos/%y/%m/%d',null=True,blank=True)
+  image=models.ImageField(upload_to='images/%y/%m/%d',null=True,blank=True)
   
   def __str__(self):
     return self.name
