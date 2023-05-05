@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-# from categories.models import Categories
+from categories.models import Categories
 # Create your models here.
 class Product(models.Model):
-  # category=models.ForeignKey(Categories,on_delete=models.SET_NULL,null=True)
+  categories=models.ForeignKey(Categories,on_delete=models.CASCADE,null=True)
   name =models.CharField(max_length=50,null=True,blank=True)
   description =models.TextField(null=True,blank=True)
   price=models.DecimalField(max_digits=10,decimal_places=2,validators=[MinValueValidator(0)])

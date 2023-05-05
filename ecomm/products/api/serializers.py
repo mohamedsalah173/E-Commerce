@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from products.models import Product
 from django.core.validators import MinValueValidator, MaxValueValidator
-# from categories.api.serializers import categoriesSerializers
+from categories.api.serializers import categoriesSerializers
 def validate_name(value):
     if not value.isalpha():
         raise serializers.ValidationError("Name must only contain letters")
@@ -24,7 +24,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     description = serializers.CharField(required=False)
     price = serializers.DecimalField(max_digits=11, decimal_places=2, required=True, validators=[MinValueValidator(0),MaxValueValidator(1000000000)])
     is_active = serializers.BooleanField(required=False)
-    # categories = categoriesSerializers()
+    categories = categoriesSerializers()
     url = serializers.HyperlinkedIdentityField(
         view_name='productDetailAV',
         lookup_field='pk'
