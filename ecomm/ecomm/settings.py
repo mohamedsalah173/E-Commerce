@@ -93,7 +93,7 @@ DATABASES = {
 
 
 # Password validation
- # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -147,9 +147,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ]
+
 }
 
 
@@ -167,3 +168,4 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
+APPEND_SLASH = False
