@@ -21,7 +21,11 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+<<<<<<< HEAD
+       'rest_framework',
+=======
     'rest_framework_simplejwt.token_blacklist',
+>>>>>>> 96ac494e9fbfba2602475192dbe39e93dfdb407f
     'categories.apps.CategoriesConfig',
     'products.apps.ProductsConfig',
     'django.contrib.admin',
@@ -31,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'rest_framework',
     'rest_framework.authtoken',
     'user',
     'order',
