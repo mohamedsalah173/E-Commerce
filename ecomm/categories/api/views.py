@@ -29,13 +29,25 @@ def getCategoryById(request, id):
         return JsonResponse(serializer.data)
     if request.method == 'PUT':
         
-        serializer = categoriesSerializers(category, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        else :
-            return JsonResponse(serializer.errors)
-        
+                try:
+                    category = Categories.objects.get(id=id)
+                except Categories.DoesNotExist:
+                    return Response("notfound")
+
+                serializer = categoriesSerializers(category, data=request.data, partial=True)
+                if serializer.is_valid():
+                
+                    if 'name' in request.data:
+                        category.name = request.data['name']
+                    if 'description' in request.data:
+                        category.description = request.data['description']
+                        
+                    category.save()
+                    return Response(serializer.data)
+                else:    
+                    return Response(serializer.errors)
+                
+                    
     if request.method == 'DELETE':
           try:
              category.delete()

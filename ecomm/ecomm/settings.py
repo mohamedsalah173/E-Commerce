@@ -31,12 +31,9 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
        'rest_framework',
     'categories.apps.CategoriesConfig',
-=======
     'products.apps.ProductsConfig',
->>>>>>> 60f89626dde0474e1ab907bc0ee3e2888acc4485
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'rest_framework',
     'rest_framework.authtoken',
     'order',
     'payment',

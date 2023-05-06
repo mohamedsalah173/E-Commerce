@@ -4,7 +4,8 @@ from categories.models import Categories
 class categoriesSerializers(serializers.ModelSerializer):
     class Meta:
         model = Categories
-        fields = '__all__'
+        fields = ['name','description','id']
+        read_only_fields = ['description','name']
         
     def create(self,validated_data) :
         return Categories.objects.create(**validated_data)
