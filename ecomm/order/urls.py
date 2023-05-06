@@ -1,8 +1,11 @@
 from django.urls import path
-from .views import order_list, order_item_details
-
+from .views import AllOrder, OrderDetailed, AddOrder
+from rest_framework.permissions import IsAuthenticated
 urlpatterns = [
-    path('allorder/', order_list, name="allorder"),
-    path('orderdetails/<int:id>/', order_item_details, name="orderdetails"),
+    path('allorder/', AllOrder.as_view(), name="allorder",
+         ),
+    path('add/<int:id>/', AddOrder.as_view(), name='addOrder'
+         ),
+    path('orderdetails/<int:id>/', OrderDetailed.as_view(),
+         name="orderdetails"),
 ]
-    
