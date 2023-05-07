@@ -10,17 +10,6 @@ from rest_framework.utils.urls import replace_query_param
 from rest_framework import generics
 from rest_framework.pagination import LimitOffsetPagination
 
-
-
-
-
-
-# class CustomPagination(PageNumberPagination):
-#     page_size = 2
-#     page_size_query_param = 'page_size'
-#     max_page_size = 3
-   
-
 class productListAV(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -32,6 +21,7 @@ class productListAV(generics.ListAPIView):
         # products, many=True, context={'request': request})
         # return Response(serializer.data)
        return self.list(request, *args, **kwargs)
+   
     def post(self, request):
         permission_classes = [IsAdminUser]
         serializer = ProductSerializer(data=request.data)
