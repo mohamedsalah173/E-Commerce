@@ -40,7 +40,7 @@ class productDetailAV(APIView):
             product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = ProductSerializer(product)
+        serializer = ProductSerializer(product, context={'request': request})
         return Response(serializer.data)
 
     def put(self, request, pk):
