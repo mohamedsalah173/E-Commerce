@@ -22,7 +22,7 @@ def validate_image(value):
         
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     image = serializers.ImageField(max_length=None,allow_empty_file=False,allow_null=True)
-    name = serializers.CharField(max_length=50, required=True, validators=[validate_name])
+    name = serializers.CharField(max_length=50, required=True, validators=[validate_name],allow_null=False)
     description = serializers.CharField(required=False)
     price = serializers.DecimalField(max_digits=11, decimal_places=2, required=True, validators=[MinValueValidator(0),MaxValueValidator(1000000000)])
     is_active = serializers.BooleanField(required=False)
