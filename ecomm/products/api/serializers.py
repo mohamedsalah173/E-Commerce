@@ -3,8 +3,10 @@ from products.models import Product
 from django.core.validators import MinValueValidator, MaxValueValidator
 from categories.api.serializers import categoriesSerializers
 def validate_name(value):
-    if not value.isalpha():
-        raise serializers.ValidationError("Name must only contain letters")
+    if not value:
+        raise serializers.ValidationError("Name cannot be empty")
+    if not str(value).isalnum():
+        raise serializers.ValidationError("Name must only contain letters and numbers")
     if len(value) < 3:
         raise serializers.ValidationError("Name must be at least 3 characters long")
 
