@@ -5,18 +5,33 @@ from rest_framework.decorators import APIView
 from products.api.serializers import ProductSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.utils.urls import replace_query_param
+from rest_framework import generics
+from rest_framework.pagination import LimitOffsetPagination
 
 
-class productListAV(APIView):
 
+
+
+
+# class CustomPagination(PageNumberPagination):
+#     page_size = 2
+#     page_size_query_param = 'page_size'
+#     max_page_size = 3
+   
+
+class productListAV(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    pagination_class = LimitOffsetPagination
     # permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        products = Product.objects.all()
-        serializer = ProductSerializer(
-            products, many=True, context={'request': request})
-        return Response(serializer.data)
-
+    def get(self, request,*args, **kwargs):
+        # products = Product.objects.all()
+        # serializer = ProductSerializer(
+        # products, many=True, context={'request': request})
+        # return Response(serializer.data)
+       return self.list(request, *args, **kwargs)
     def post(self, request):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
@@ -25,7 +40,7 @@ class productListAV(APIView):
         else:
             return Response(serializer.errors)
 
-
+#  cruds  for one  product 
 class productDetailAV(APIView):
     def get(self, request, pk):
         try:
