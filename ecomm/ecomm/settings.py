@@ -81,18 +81,6 @@ DATABASES = {
     }
 }
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'DjangoAndReact',
-#         'CLIENT':{
-#             'host': 'mongodb+srv://MontaserHassan:M0nTiI19419@cluster0.rzavcif.mongodb.net/DjangoAndReact',
-#         }
-#     }
-# }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
