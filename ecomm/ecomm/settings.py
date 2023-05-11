@@ -67,6 +67,8 @@ TEMPLATES = [
     },
 ]
 
+STRIP_SECRETE_KEY = 'sk_test_51N6ijoDIajLiykdANbBTjryP0yU2fqkf3Ta8vB4LepConqUjHImukXhzXsFFTgs0iOTmH9BSZb7Y25mMTT59oysA00UfbdvZGQ'
+
 WSGI_APPLICATION = 'ecomm.wsgi.application'
 
 
