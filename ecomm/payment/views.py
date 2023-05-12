@@ -64,34 +64,33 @@
 
 
 import stripe
-# This is your test secret API key.
-stripe.api_key = 'sk_test_51N6ijoDIajLiykdANbBTjryP0yU2fqkf3Ta8vB4LepConqUjHImukXhzXsFFTgs0iOTmH9BSZb7Y25mMTT59oysA00UfbdvZGQ'
+from django.conf import settings
+from rest_framework import status
+from django.shortcuts import  redirect
+from rest_framework import APIView
+from rest_framework.response import Response
 
-app = Flask(__name__,
-            static_url_path='',
-            static_folder='public')
 
-YOUR_DOMAIN = 'http://localhost:4242'
+stripe.api_key = settings.STRIP_SECRETE_KEY
 
-@app.route('/create-checkout-session', methods=['POST'])
-def create_checkout_session():
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': '{{PRICE_ID}}',
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url=YOUR_DOMAIN + '?success=true',
-            cancel_url=YOUR_DOMAIN + '?canceled=true',
-        )
-    except Exception as e:
-        return str(e)
-
-    return redirect(checkout_session.url, code=303)
-
-if __name__ == '__main__':
-    app.run(port=4242)
+class StripeCheckOutView(APIView):
+    def post(self, request):
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[
+                    {
+                        'price': 'price_1N6jSvDIajLiykdAwko7pp1e',
+                        'quantity': 1,
+                    },
+                ],
+                payment_method_types=['card'],
+                mode='payment',
+                success_url=settings.SITE_URL + '/?success=true/' + 'session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=settings.SITE_URL  + '?canceled=true',
+            )
+            return redirect(checkout_session.url)
+        except:
+            return Response(
+                {'error':'some thing went wrong while session checkout id'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
