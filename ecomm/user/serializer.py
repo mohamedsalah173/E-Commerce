@@ -55,3 +55,25 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg)
 
         return attrs
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserBase
+        fields = ('id', 'email', 'username', 'phone_number',
+                  'address', 'is_active', 'is_staff')
+        read_only_fields = ('id', 'created', 'updated',
+                            'is_staff', 'is_active')
+
+
+class UserDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserBase
+        fields = '__all__'
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserBase
+        fields = ('id', 'email', 'username', 'phone_number',
+                  'address', 'is_active', 'is_staff')

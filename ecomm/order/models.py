@@ -1,7 +1,8 @@
 from django.db import models
-from django.core.validators import MinValueValidator
+# from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from products.models import Product
+from user.models import UserBase
 import uuid
 
 
@@ -14,22 +15,29 @@ SHIPPING_STATUS = [
     ('S', 'Shipped'),
     ('D', 'Delivered'),
 ]
+
 class Order(models.Model):
-    
-    # user = models.ForeignKey(User, on_delete=models.CASCADE); // waiting for amany
-    product_name = models.CharField(max_length=256)
-    quantity = models.IntegerField()
-    transaction_id= models.IntegerField() 
+
+    transaction_id= models.UUIDField(default=uuid.uuid4, editable=False)
     shipping = models.CharField(max_length=1, choices=SHIPPING_STATUS ,default='P', null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # price = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(UserBase, on_delete=models.CASCADE, null=True);
 
     def __str__(self):
-        return self.product_name
+        return self.shipping + ' -- ' + str(self.transaction_id)
     
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.transaction_id = int(uuid.uuid4().int & (10**12-1))
-        super().save(*args, **kwargs)
+
         
+class OrderItems(models.Model):
+    
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    quantity = models.PositiveBigIntegerField()
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='items')
+    
+    def __str__(self):
+        return self.product.name + ' -- ' + str(self.product.price * self.quantity)
+    
+    def get_item_price(self):
+        return self.product.price * self.quantity
+    

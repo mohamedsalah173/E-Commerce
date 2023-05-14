@@ -10,4 +10,3 @@ from .views import StripeCheckOutView
 urlpatterns = [
     path('create-checkout-session',StripeCheckOutView.as_view(),name='StripeCheckOutView'),
 ]
-    
