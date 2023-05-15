@@ -10,26 +10,13 @@ class OrderItemsSerializers(serializers.ModelSerializer):
     class Meta:
         model = OrderItems
         exclude=['order']
-        # validators = [
-        #     serializers.UniqueTogetherValidator(
-        #         queryset=OrderItems.objects.all(),
-        #         fields=('product', 'order'),
-        #         message='Product already exists in this order'
-        #     )
-        # ]
+
         
     def validate_quantity(self, value):
         if value < 0:
             raise serializers.ValidationError("Quantity must be a positive integer.")
         return value
-    
-    # def validate(self, data):
-    #     quantity = data.get('quantity')
-    #     product = data.get('product')
-    #     if quantity > product.stoke:
-    #         raise serializers.ValidationError("Quantity is greater than the product's stock.")
-    #     return data
-        
+     
 class OrderSerializers(serializers.ModelSerializer):
 
     items = OrderItemsSerializers(many=True, required=False)
@@ -45,4 +32,3 @@ class OrderSerializers(serializers.ModelSerializer):
         for item in obj.items.all():
             total += item.product.price * item.quantity
         return total
-    

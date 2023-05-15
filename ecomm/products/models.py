@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-# from categories.models import Categories
+from categories.models import Categories
 # Create your models here.
 class Product(models.Model):
   categories=models.ForeignKey(Categories,on_delete=models.CASCADE,null=True)
