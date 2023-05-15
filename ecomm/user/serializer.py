@@ -48,7 +48,7 @@ class LoginSerializer(serializers.Serializer):
                     msg = 'User account is disabled.'
                     raise serializers.ValidationError(msg)
             else:
-                msg = 'Unable to log in with provided credentials.'
+                msg = 'Wrong Password or email'
                 raise serializers.ValidationError(msg)
         else:
             msg = 'Must include "email" and "password".'

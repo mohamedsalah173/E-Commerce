@@ -1,6 +1,6 @@
 from django.urls import path
 from .api import views
-from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
+
 
 urlpatterns = [
 
