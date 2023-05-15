@@ -3,8 +3,10 @@ from products.models import Product
 from django.core.validators import MinValueValidator, MaxValueValidator
 from categories.api.serializers import categoriesSerializers
 def validate_name(value):
-    if not value.isalpha():
-        raise serializers.ValidationError("Name must only contain letters")
+    if not value:
+        raise serializers.ValidationError("Name cannot be empty")
+    if not str(value).isalnum():
+        raise serializers.ValidationError("Name must only contain letters and numbers")
     if len(value) < 3:
         raise serializers.ValidationError("Name must be at least 3 characters long")
 
@@ -20,11 +22,11 @@ def validate_image(value):
         
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     image = serializers.ImageField(max_length=None,allow_empty_file=False,allow_null=True)
-    name = serializers.CharField(max_length=50, required=True, validators=[validate_name])
+    name = serializers.CharField(max_length=50, required=True, validators=[validate_name],allow_null=False)
     description = serializers.CharField(required=False)
     price = serializers.DecimalField(max_digits=11, decimal_places=2, required=True, validators=[MinValueValidator(0),MaxValueValidator(1000000000)])
     is_active = serializers.BooleanField(required=False)
-    categories = categoriesSerializers()
+    # categories = categoriesSerializers()
     url = serializers.HyperlinkedIdentityField(
         view_name='productDetailAV',
         lookup_field='pk'

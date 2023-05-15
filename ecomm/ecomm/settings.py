@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'categories.apps.CategoriesConfig',
     'products.apps.ProductsConfig',
@@ -31,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'rest_framework',
     'rest_framework.authtoken',
     'user',
     'order',
@@ -68,6 +68,8 @@ TEMPLATES = [
     },
 ]
 
+STRIP_SECRETE_KEY = 'sk_test_51N6ijoDIajLiykdANbBTjryP0yU2fqkf3Ta8vB4LepConqUjHImukXhzXsFFTgs0iOTmH9BSZb7Y25mMTT59oysA00UfbdvZGQ'
+
 WSGI_APPLICATION = 'ecomm.wsgi.application'
 
 
@@ -80,18 +82,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'DjangoAndReact',
-#         'CLIENT':{
-#             'host': 'mongodb+srv://MontaserHassan:M0nTiI19419@cluster0.rzavcif.mongodb.net/DjangoAndReact',
-#         }
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -145,11 +135,15 @@ LOGIN_REDIRECT_URL = '/user/dashboard'
 LOGIN_URL = 'user/login/'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
 
-
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 2,
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    )
 }
 
 
@@ -168,3 +162,5 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 APPEND_SLASH = False
+
+SITE_URL = 'http://locahost/3000'
