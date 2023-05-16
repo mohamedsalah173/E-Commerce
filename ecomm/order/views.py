@@ -10,13 +10,14 @@ from .serializers import OrderSerializers, OrderItemsSerializers
 
 
 class OrderList(generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticated]
-    queryset = Order.objects.all()
     serializer_class = OrderSerializers
     
     def get_queryset(self):
         user = self.request.user
-        return Order.objects.filter(user=user)
+        if user.is_authenticated:
+            return Order.objects.filter(user=user)
+        else:
+            return Order.objects.none()
 
     
 class AddOrder(generics.ListCreateAPIView):
@@ -52,13 +53,14 @@ class AddOrderItem(generics.ListCreateAPIView):
             order = Order.objects.get(pk=pk)
         except Order.DoesNotExist:
             return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+        order.user = request.user
         serializer = OrderItemsSerializers(data=request.data)
         if serializer.is_valid():
             product = serializer.validated_data['product']
             quantity = serializer.validated_data['quantity']
             if quantity == 0:
-                # print(f"quantity: {quantity}")
+                print(f"quantity: {quantity}")
+                print(f"quantity: {product.stoke}")
                 return Response({'error': 'Quantity must be greater than 0'}, status=status.HTTP_400_BAD_REQUEST)
             if order.items.filter(product=product).exists():
                 return Response({'error': 'Product already in order items'}, status=status.HTTP_400_BAD_REQUEST)
