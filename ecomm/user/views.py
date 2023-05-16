@@ -13,7 +13,6 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = Registration
-    permission_classes = []
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -93,7 +92,13 @@ class UserDeleteView(APIView):
 
 
 class UserListView(APIView):
-    def get(self, request):
-        users = UserBase.objects.all()
-        serializer = UserListSerializer(users, many=True)
-        return Response(serializer.data)
+
+    def get(self, request, pk):
+        permission_classes = [IsAuthenticated]
+        user = UserBase.objects.filter(id=pk).first()
+
+        if user:
+            serializer = UserListSerializer(user)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)

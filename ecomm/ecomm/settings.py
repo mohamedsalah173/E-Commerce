@@ -1,6 +1,8 @@
 from datetime import timedelta
-
+# from dotenv import load_dotenv
 from pathlib import Path, os
+
+# load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +28,7 @@ INSTALLED_APPS = [
     'categories.apps.CategoriesConfig',
     'products.apps.ProductsConfig',
     'wishList.apps.WishlistConfig',
+    'cart.apps.CartConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -70,6 +73,8 @@ TEMPLATES = [
     },
 ]
 
+STRIP_SECRETE_KEY = 'sk_test_51N6ijoDIajLiykdANbBTjryP0yU2fqkf3Ta8vB4LepConqUjHImukXhzXsFFTgs0iOTmH9BSZb7Y25mMTT59oysA00UfbdvZGQ'
+
 WSGI_APPLICATION = 'ecomm.wsgi.application'
 
 
@@ -84,13 +89,17 @@ DATABASES = {
 }
 
 
+# user = os.environ.get('DB_USER')
+# password = os.environ.get('DB_PASSWORD')
+
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'DjangoAndReact',
-#         'CLIENT':{
-#             'host': 'mongodb+srv://MontaserHassan:M0nTiI19419@cluster0.rzavcif.mongodb.net/DjangoAndReact',
-#         }
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'Django',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'USER': user,
+#         'PASSWORD': password,
 #     }
 # }
 
@@ -130,6 +139,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -147,12 +158,15 @@ LOGIN_REDIRECT_URL = '/user/dashboard'
 LOGIN_URL = 'user/login/'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 2
+    'PAGE_SIZE': 2,
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    )
 }
 
 
@@ -164,10 +178,12 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 APPEND_SLASH = False
+
+SITE_URL = 'http://localhost:3000'
