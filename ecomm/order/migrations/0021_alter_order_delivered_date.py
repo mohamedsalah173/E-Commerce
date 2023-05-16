@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='order',
             name='delivered_date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 5, 19, 2, 28, 5, 659903, tzinfo=datetime.timezone.utc), editable=False),
+            field=models.DateTimeField(default=datetime.datetime(
+                2023, 5, 19, 2, 28, 5, 659903, tzinfo=datetime.timezone.utc), editable=False),
         ),
     ]
