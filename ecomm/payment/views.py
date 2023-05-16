@@ -79,14 +79,16 @@ class StripeCheckOutView(APIView):
             checkout_session = stripe.checkout.Session.create(
                 line_items=[
                     {
-                        'price': 'price_1N6jSvDIajLiykdAwko7pp1e',
+                        'price': 'price_1N8LQ7DIajLiykdApvtl0hZ6',
                         'quantity': 1,
                     },
                 ],
-                payment_method_types=['card'],
+                # payment_method_types=['card'],
                 mode='payment',
-                success_url=settings.SITE_URL + '/?success=true/' + 'session_id={CHECKOUT_SESSION_ID}',
+                # success_url=settings.SITE_URL + '/?success=true/' + 'session_id={CHECKOUT_SESSION_ID}',
+                success_url=settings.SITE_URL + '/order',
                 cancel_url=settings.SITE_URL  + '?canceled=true',
+                
             )
             return redirect(checkout_session.url)
         except:
