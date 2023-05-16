@@ -26,7 +26,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     description = serializers.CharField(required=False)
     price = serializers.DecimalField(max_digits=11, decimal_places=2, required=True, validators=[MinValueValidator(0),MaxValueValidator(1000000000)])
     is_active = serializers.BooleanField(required=False)
-    # categories = categoriesSerializers()
+    categories = categoriesSerializers()
     url = serializers.HyperlinkedIdentityField(
         view_name='productDetailAV',
         lookup_field='pk'
