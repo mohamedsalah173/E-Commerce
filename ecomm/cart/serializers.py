@@ -35,11 +35,11 @@ class cartItemsSerializers(serializers.ModelSerializer):
         return CartItems.objects.create(**validated_data) 
     
     def update(self,instance,validated_data) :
-        if instance.user :
-         instance.user = validated_data.get('user',instance.user)
-        if instance.products :
-         instance.products = validated_data.get('products',instance.products)
-        instance.save()
+        
+        if instance.quantity :
+         instance.quantity = validated_data.get('quantity',instance.quantity)
+         print(instance.quantity)
+         instance.save()
         return instance   
     
    
