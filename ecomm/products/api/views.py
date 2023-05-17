@@ -14,24 +14,29 @@ class productListAV(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     pagination_class = LimitOffsetPagination
-    # permission_classes = [IsAuthenticated]
+    
     def get(self, request,*args, **kwargs):
        return self.list(request, *args, **kwargs)
-   
+  
     def post(self, request):
-        permission_classes = [IsAdminUser]
+        
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+        
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
+        return super().get_permissions()
 
 #  cruds  for one  product 
 class productDetailAV(APIView):
 
     def get(self, request, pk):
-        permission_classes = [AllowAny]
+       
         try:
             product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
@@ -40,7 +45,7 @@ class productDetailAV(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk):
-        permission_classes = [IsAdminUser]
+       
         try:
             product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
@@ -55,7 +60,12 @@ class productDetailAV(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        permission_classes = [IsAdminUser]
+    
         product = Product.objects.get(pk=pk)
         product.delete()
         return Response({'message': 'Product deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    
+    def get_permissions(self):
+        if self.request.method in ['PUT','DELETE']:
+            return [IsAdminUser()]
+        return super().get_permissions()
