@@ -55,7 +55,7 @@ def getAllCart(request):
     return Response(serializer.data)
 
 @api_view(['GET','DELETE'])
-@permission_classes([IsAdminUser | IsAuthenticated])
+#@permission_classes([IsAdminUser | IsAuthenticated])
 def getCartById(request, id):
     try:
         cart = Cart.objects.get(id=id)
@@ -113,6 +113,30 @@ def getCartItemsById(request, id):
              
           except:
              return Response(cartitems.errors)
+         
+
+@api_view(['GET'])
+def getCartItemsByCartId(request, cart):
+    try:
+        cartitems = CartItems.objects.get(cart=cart)
+    except CartItems.DoesNotExist:
+        return Response("notfound")
+    if request.method == 'GET':
+        permission_classes = [AllowAny]
+        serializer = cartItemsSerializers(cartitems)
+        return JsonResponse(serializer.data)
+    
+    
+    
+@api_view(['GET','DELETE'])   
+def getCartByUserId(request,user):
+    try:
+        cart = Cart.objects.get(user=user)
+    except Cart.DoesNotExist:
+        return Response("notfound")
+    if request.method == 'GET':
+        serializer = cartSerializers(cart)
+        return JsonResponse(serializer.data)
             
 
    
