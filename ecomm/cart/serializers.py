@@ -4,12 +4,12 @@ from  .models  import CartItems
 from user.serializer import LoginSerializer
 # from products.api.serializers import ProductSerializer
 from user.models import UserBase
-from products.models import Product
+# from products.models import Product
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = '__all__'
+# class ProductSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Product
+#         fields = '_all_'
 
 
 
@@ -25,7 +25,7 @@ class cartSerializers(serializers.ModelSerializer):
      
     
 class cartItemsSerializers(serializers.ModelSerializer):
-    product = ProductSerializer()
+    # product = ProductSerializer()
   
     class Meta:
         model = CartItems
@@ -40,6 +40,4 @@ class cartItemsSerializers(serializers.ModelSerializer):
          instance.quantity = validated_data.get('quantity',instance.quantity)
          print(instance.quantity)
          instance.save()
-        return instance   
-    
-   
+        return instance

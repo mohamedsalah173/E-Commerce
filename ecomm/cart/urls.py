@@ -10,5 +10,6 @@ urlpatterns = [
    path('getCartById/<int:id>',views.getCartById),
    path('getCartItemsById/<int:id>',views.getCartItemsById),
    path('getCartItemsByUserId/<int:user>',views.getCartByUserId),
+   path('getCartItemsByProductId/<int:product>/<int:cart>/',views.getCartItemsByProductId),
    
 ]
