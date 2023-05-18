@@ -2,13 +2,15 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .serializers import cartSerializers ,cartItemsSerializers
 from .models import Cart , CartItems
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from django.http import JsonResponse
-from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated 
+
 
 
 @api_view(['POST', 'GET'])
+# @permission_classes([IsAdminUser, IsAuthenticated])
 def addToCart(request):
     print(request.data)
     serializer = cartSerializers(data=request.data)
@@ -20,7 +22,9 @@ def addToCart(request):
         return Response(serializer.errors)
 
 
+
 @api_view(['POST', 'GET'])
+# @permission_classes([IsAdminUser, IsAuthenticated])
 def addToCartItems(request):
     print(request.data)
     serializer = cartItemsSerializers(data=request.data)
@@ -51,13 +55,13 @@ def getAllCart(request):
     return Response(serializer.data)
 
 @api_view(['GET','DELETE'])
+#@permission_classes([IsAdminUser | IsAuthenticated])
 def getCartById(request, id):
     try:
         cart = Cart.objects.get(id=id)
     except Cart.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
-        permission_classes = [AllowAny]
         serializer = cartSerializers(cart)
         return JsonResponse(serializer.data)
    
@@ -69,10 +73,11 @@ def getCartById(request, id):
              
           except:
              return Response(category.errors)
-            
+        
 
     
 @api_view(['GET', 'PUT', 'DELETE'])
+# @permission_classes([IsAdminUser | IsAuthenticated])
 def getCartItemsById(request, id):
     try:
         cartitems = CartItems.objects.get(id=id)
@@ -82,26 +87,22 @@ def getCartItemsById(request, id):
         permission_classes = [AllowAny]
         serializer = cartItemsSerializers(cartitems)
         return JsonResponse(serializer.data)
-    #  if request.method == 'PUT':
+    
+    if request.method == 'PUT':
         
-        # try:
-        #     cart = Cart.objects.get(id=id)
-        # except Cart.DoesNotExist:
-        #     return Response("notfound")
+        try:
+            cart = CartItems.objects.get(id=id)
+        except Cart.DoesNotExist:
+            return Response("notfound")
 
-        # serializer = cartSerializers(cart, data=request.data, partial=True)
-        # if serializer.is_valid():
-        
-        #     if 'products' in request.data:
-        #         cart.products = request.data['products']
-        #         print(cart.products)
-        #     if 'user' in request.data:
-        #         cart.user = request.data['user']
-                
-        #     cart.save()
-        #     return Response(serializer.data)
-        # else:    
-        #     return Response(serializer.errors)
+        serializer = cartItemsSerializers(cart, data=request.data, partial=True)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data)
+            
+        else: 
+               
+            return Response(serializer.errors)
                 
                 
                     
@@ -112,9 +113,42 @@ def getCartItemsById(request, id):
              
           except:
              return Response(cartitems.errors)
+         
+
+@api_view(['GET'])
+def getCartItemsByCartId(request, cart):
+    try:
+        cartitems = CartItems.objects.get(cart=cart)
+    except CartItems.DoesNotExist:
+        return Response("notfound")
+    if request.method == 'GET':
+        permission_classes = [AllowAny]
+        serializer = cartItemsSerializers(cartitems)
+        return JsonResponse(serializer.data)
+    
+    
+    
+@api_view(['GET','DELETE'])   
+def getCartByUserId(request,user):
+    try:
+        cart = Cart.objects.get(user=user)
+    except Cart.DoesNotExist:
+        return Response("notfound")
+    if request.method == 'GET':
+        serializer = cartSerializers(cart)
+        return JsonResponse(serializer.data)
             
 
-   
+@api_view(['GET'])
+def getCartItemsByProductId(request, product,cart):
+    try:
+        cartitems = CartItems.objects.get(product=product,cart=cart)
+    except CartItems.DoesNotExist:
+        return Response("notfound")
+    if request.method == 'GET':
+        permission_classes = [AllowAny]
+        serializer = cartItemsSerializers(cartitems)
+        return JsonResponse(serializer.data)  
     
     
     

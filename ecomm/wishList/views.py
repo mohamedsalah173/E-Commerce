@@ -1,12 +1,12 @@
 from django.http import JsonResponse
 from .serializers import wishListSerializers
 from .models import WishList
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 
-
+@permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['POST', 'GET'])
 def add_wishListItem(request):
     print(request.data)
@@ -18,9 +18,10 @@ def add_wishListItem(request):
     else:
         return Response(serializer.errors)
 
-
+@permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'PUT', 'DELETE'])
 def getwishItemById(request, id):
+    permission_classes = [IsAdminUser|IsAuthenticated]
     try:
         wishlist = WishList.objects.get(id=id)
     except WishList.DoesNotExist:
@@ -38,7 +39,7 @@ def getwishItemById(request, id):
           except:
              return Response(wishlist.errors)
             
-
+@permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'DELETE'])
 def getwishItemByUserId(request, user_id):
    
@@ -47,7 +48,6 @@ def getwishItemByUserId(request, user_id):
     except WishList.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
-        permission_classes = [AllowAny]
         serializer = wishListSerializers(wishlists, many=True)
         return Response(serializer.data)
                   
@@ -59,7 +59,7 @@ def getwishItemByUserId(request, user_id):
           except:
              return Response(wishlists.errors)   
 
-
+@permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'DELETE'])
 def getwishItemByProductId(request, product_id):
    
@@ -68,7 +68,6 @@ def getwishItemByProductId(request, product_id):
     except WishList.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
-        permission_classes = [AllowAny]
         serializer = wishListSerializers(wishlists, many=True)
         return Response(serializer.data)
                   
@@ -81,9 +80,9 @@ def getwishItemByProductId(request, product_id):
              return Response(wishlists.errors)   
 
 
+@permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET'])
-def getAllwishList(request):
-    permission_classes = [AllowAny]
+def getAllwishList(request):   
     try:
         wishlist =WishList.objects.all()
     except WishList.DoesNotExist:

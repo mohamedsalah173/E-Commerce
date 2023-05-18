@@ -69,11 +69,12 @@ from rest_framework import status
 from django.shortcuts import  redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework.permissions import IsAdminUser ,IsAuthenticated
 
 stripe.api_key = settings.STRIP_SECRETE_KEY
 
 class StripeCheckOutView(APIView):
+    permission_classes = [IsAuthenticated | IsAdminUser]
     def post(self, request):
         try:
             checkout_session = stripe.checkout.Session.create(
