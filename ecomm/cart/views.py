@@ -150,5 +150,14 @@ def getCartItemsByProductId(request, product,cart):
         serializer = cartItemsSerializers(cartitems)
         return JsonResponse(serializer.data)  
     
-    
+@api_view(['GET'])
+def getCartItemsByCartId(request, cart):
+    try:
+        cart_items = CartItems.objects.filter(cart=cart)
+    except CartItems.DoesNotExist:
+        return Response("notfound")
+    if request.method == 'GET':
+        permission_classes = [AllowAny]
+        serializer = cartItemsSerializers(cart_items, many=True)
+        return JsonResponse(serializer.data,safe=False)    
     
