@@ -1,5 +1,9 @@
 from datetime import timedelta
 from pathlib import Path, os
+import environ
+import dj_database_url
+env = environ.Env()
+environ.Env.read_env()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -10,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h6_4ig6o49(6qvb&ul_n3u=oku)k^le#+58)$zzfyt@oo&ywr*'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -25,6 +29,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'categories.apps.CategoriesConfig',
     'products.apps.ProductsConfig',
+    'wishList.apps.WishlistConfig',
+    'cart.apps.CartConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,6 +42,7 @@ INSTALLED_APPS = [
     'user',
     'order',
     'payment',
+    
 
 ]
 
@@ -76,13 +83,16 @@ WSGI_APPLICATION = 'ecomm.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
+DATABASES = {
+    'default': dj_database_url.parse(env('DATABASE_URL'))
+}
 
 # user = os.environ.get('DB_USER')
 # password = os.environ.get('DB_PASSWORD')

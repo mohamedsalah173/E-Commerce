@@ -5,11 +5,12 @@ from django.shortcuts import  redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from order.views import OrderItemsList, OrderChanges;
-
+from rest_framework.permissions import IsAdminUser ,IsAuthenticated
 
 stripe.api_key = settings.STRIP_SECRETE_KEY
 
 class StripeCheckOutView(APIView):
+    permission_classes = [IsAuthenticated | IsAdminUser]
     def post(self, request, *args, **kwargs):
         try:
             order_id = 1  # Replace with the actual order ID

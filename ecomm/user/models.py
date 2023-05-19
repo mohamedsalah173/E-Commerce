@@ -30,7 +30,7 @@ class CustomAccountManager(BaseUserManager):
 
 class UserBase(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('email address', unique=True)
-    username = models.CharField(max_length=150, unique=True)
+    username = models.CharField(max_length=150)
 
     # Delivery details
     phone_number = models.CharField(max_length=15, blank=True)
