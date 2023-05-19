@@ -4,7 +4,7 @@ from rest_framework import status
 from django.shortcuts import  redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from order.views import OrderItemsList;
+from order.views import OrderItemsList, OrderChanges;
 
 
 stripe.api_key = settings.STRIP_SECRETE_KEY
@@ -38,8 +38,10 @@ class StripeCheckOutView(APIView):
                         'quantity': 1,
                     },        
                 ],
+                
                 # payment_method_types=['card'],
                 mode='payment',
+                
                 # success_url=settings.SITE_URL + '/?success=true/' + 'session_id={CHECKOUT_SESSION_ID}',
                 success_url=settings.SITE_URL + '/order',
                 cancel_url=settings.SITE_URL  + '?canceled=true',
