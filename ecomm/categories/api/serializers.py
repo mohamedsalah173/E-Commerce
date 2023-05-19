@@ -5,7 +5,7 @@ class categoriesSerializers(serializers.ModelSerializer):
     # products = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
     class Meta:
         model = Categories
-        fields = ['name','description','id']
+        fields = '__all__'
     #   read_only_fields = ['description','name']
         
     def create(self,validated_data) :
