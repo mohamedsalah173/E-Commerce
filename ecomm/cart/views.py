@@ -10,7 +10,11 @@ from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 
 
 @api_view(['POST', 'GET'])
+<<<<<<< HEAD
 #@permission_classes([IsAdminUser, IsAuthenticated])
+=======
+# @permission_classes([IsAdminUser, IsAuthenticated])
+>>>>>>> 30aeb9b499f7b5911d92090db7387e540aa9c807
 def addToCart(request):
     print(request.data)
     serializer = cartSerializers(data=request.data)
@@ -140,7 +144,8 @@ def getCartByUserId(request,user):
     
 @api_view(['GET'])
 
-def getCartItemsByProductId(request,product,cart):
+@api_view(['GET'])
+def getCartItemsByProductId(request, product,cart):
     try:
         cartitems = CartItems.objects.get(product=product,cart=cart)
     except CartItems.DoesNotExist:

@@ -40,6 +40,4 @@ class cartItemsSerializers(serializers.ModelSerializer):
          instance.quantity = validated_data.get('quantity',instance.quantity)
          print(instance.quantity)
          instance.save()
-        return instance   
-    
-   
+        return instance
