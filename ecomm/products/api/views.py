@@ -8,12 +8,12 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 # from rest_framework.pagination import PageNumberPagination
 # from rest_framework.utils.urls import replace_query_param
 from rest_framework import generics
-from rest_framework.pagination import LimitOffsetPagination
+# from rest_framework.pagination import LimitOffsetPagination
 
 class productListAV(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    pagination_class = LimitOffsetPagination
+    # pagination_class = LimitOffsetPagination
     
     def get(self, request,*args, **kwargs):
        return self.list(request, *args, **kwargs)
