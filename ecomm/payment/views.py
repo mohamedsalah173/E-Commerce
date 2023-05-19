@@ -12,8 +12,9 @@ stripe.api_key = settings.STRIP_SECRETE_KEY
 class StripeCheckOutView(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            order_id = 123  # Replace with the actual order ID
+            order_id = 1  # Replace with the actual order ID
             response = request.get(f'{settings.SITE_URL}/order/{order_id}')
+            print(f'rerere ${response}')
             
             if response.status_code == status.HTTP_200_OK:
                 order_data = response.json()
