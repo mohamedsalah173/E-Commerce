@@ -33,7 +33,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     category_name = serializers.SerializerMethodField()
 
     def get_category_name(self, obj):
-        return obj.categories.name
+        return obj.Categories.name
     
     url = serializers.HyperlinkedIdentityField(
         view_name='productDetailAV',
