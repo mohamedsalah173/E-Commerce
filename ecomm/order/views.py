@@ -3,13 +3,15 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status, generics
 from rest_framework import serializers
+from django.db.models import F, Sum
 from .models import Order, OrderItems
 from .serializers import OrderSerializers, OrderItemsSerializers
+from cart.models import Cart, CartItems
 # from django.core.exceptions import ValidationError
 
 
 
-class OrderList(generics.ListCreateAPIView):
+class OrderList(generics.ListAPIView):
     serializer_class = OrderSerializers
     
     def get_queryset(self):
@@ -37,47 +39,46 @@ class AddOrder(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AddOrderItem(generics.ListCreateAPIView):
+    serializer_class = OrderSerializers
     
-    serializer_class = OrderItemsSerializers
-    queryset = OrderItems.objects.all()
-
     def get_queryset(self):
+        return Order.objects.all()
+
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
-            order = Order.objects.get(pk=self.kwargs['pk'])
-            return order.items.all()
-        except Order.DoesNotExist:
-            raise NotFound("Order not found")
-    
-    def post(self, request, pk):
-        try:
-            order = Order.objects.get(pk=pk)
-        except Order.DoesNotExist:
-            return Response({'error': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
-        order.user = request.user
-        serializer = OrderItemsSerializers(data=request.data)
-        if serializer.is_valid():
-            product = serializer.validated_data['product']
-            quantity = serializer.validated_data['quantity']
-            if quantity == 0:
-                print(f"quantity: {quantity}")
-                print(f"quantity: {product.stoke}")
-                return Response({'error': 'Quantity must be greater than 0'}, status=status.HTTP_400_BAD_REQUEST)
-            if order.items.filter(product=product).exists():
-                return Response({'error': 'Product already in order items'}, status=status.HTTP_400_BAD_REQUEST)
+            cart = Cart.objects.get(user=request.user)
+        except Cart.DoesNotExist:
+            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        total_price = 0
+        cart_items = cart.items.all()
+        for cart_item in cart_items:
+            item_total = cart_item.product.price * cart_item.quantity
+            total_price += item_total
             
-            if product.stoke==0:
-                return Response({'error': 'Product stoke is 0'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            if quantity > product.stoke:
-                raise serializers.ValidationError("Quantity is greater than the product's stock.")
-        
-            order_item = OrderItems(product=product, quantity=quantity, order=order)
-            product.stoke -= quantity
+        # Create an order
+        order = Order(user=request.user, status='Pending', total_price=total_price)
+        order.save()
+
+        # Retrieve cart items and add them to the order
+        cart_items = cart.products.all()
+        for cart_item in cart_items:
+            order_item = OrderItems(product=cart_item.product, quantity=cart_item.quantity, order=order)
             order_item.save()
+
+            # Update the product stoke
+            product = cart_item.product
+            product.stoke -= cart_item.quantity
             product.save()
-            serializer = OrderItemsSerializers(order_item)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Clear the cart
+        cart.items.all().delete()
+
+        serializer = OrderSerializers(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class OrderItemsList(APIView):

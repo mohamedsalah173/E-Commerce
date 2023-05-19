@@ -10,7 +10,11 @@ from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 
 
 @api_view(['POST', 'GET'])
+<<<<<<< HEAD
+#@permission_classes([IsAdminUser, IsAuthenticated])
+=======
 # @permission_classes([IsAdminUser, IsAuthenticated])
+>>>>>>> 30aeb9b499f7b5911d92090db7387e540aa9c807
 def addToCart(request):
     print(request.data)
     serializer = cartSerializers(data=request.data)
@@ -137,7 +141,8 @@ def getCartByUserId(request,user):
     if request.method == 'GET':
         serializer = cartSerializers(cart)
         return JsonResponse(serializer.data)
-            
+    
+@api_view(['GET'])
 
 @api_view(['GET'])
 def getCartItemsByProductId(request, product,cart):
@@ -148,7 +153,20 @@ def getCartItemsByProductId(request, product,cart):
     if request.method == 'GET':
         permission_classes = [AllowAny]
         serializer = cartItemsSerializers(cartitems)
-        return JsonResponse(serializer.data)  
+        return JsonResponse(serializer.data)           
+
+
+@api_view(['GET'])
+def getCartItemsByCartId(request, cart):
+    try:
+        cart_items = CartItems.objects.filter(cart=cart)
+    except CartItems.DoesNotExist:
+        return Response("notfound")
+    if request.method == 'GET':
+        permission_classes = [AllowAny]
+        serializer = cartItemsSerializers(cart_items, many=True)
+        return JsonResponse(serializer.data, safe=False)
+   
     
 @api_view(['GET'])
 def getCartItemsByCartId(request, cart):
