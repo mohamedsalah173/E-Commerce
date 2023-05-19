@@ -29,12 +29,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     price = serializers.DecimalField(max_digits=11, decimal_places=2, required=True, validators=[MinValueValidator(0),MaxValueValidator(1000000000)])
     is_active = serializers.BooleanField(required=False)
     # categories = categoriesSerializers()
-    # categories = serializers.PrimaryKeyRelatedField(queryset=Categories.objects.all(), many=False)
-    category_name = serializers.SerializerMethodField()
-
-    def get_category_name(self, obj):
-        return obj.categories.name
-    
+    categories = serializers.PrimaryKeyRelatedField(queryset=Categories.objects.all(), many=False)
     url = serializers.HyperlinkedIdentityField(
         view_name='productDetailAV',
         lookup_field='pk'
