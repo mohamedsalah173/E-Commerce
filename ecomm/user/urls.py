@@ -8,7 +8,7 @@ from .views import RegisterView, LogoutView, LoginView, UserUpdateView, UserDele
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('register/', RegisterView.as_view(), name='register'),
+    path('/register/', RegisterView.as_view(), name='register'),
     path('update/<int:pk>', UserUpdateView.as_view(), name='updateUser'),
     path('delete/<int:pk>', UserDeleteView.as_view(), name='deleteUser'),
     path('<int:pk>/', UserListView.as_view(), name='List'),
