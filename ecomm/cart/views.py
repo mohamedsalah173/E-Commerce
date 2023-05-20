@@ -122,12 +122,12 @@ def getCartItemsById(request, id):
 @api_view(['GET','DELETE'])   
 def getCartByUserId(request,user):
     try:
-        cart = Cart.objects.get(user=user)
+        cart = Cart.objects.filter(user=user)
     except Cart.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
         serializer = cartSerializers(cart,many=True)
-        return JsonResponse(serializer.data)
+        return JsonResponse(serializer.data,safe=False)
     
 # @api_view(['GET'])
 
