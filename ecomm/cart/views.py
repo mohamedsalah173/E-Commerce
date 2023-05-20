@@ -126,7 +126,7 @@ def getCartByUserId(request,user):
     except Cart.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
-        serializer = cartSerializers(cart)
+        serializer = cartSerializers(cart,many=True)
         return JsonResponse(serializer.data)
     
 # @api_view(['GET'])

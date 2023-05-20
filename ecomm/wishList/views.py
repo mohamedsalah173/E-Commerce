@@ -41,10 +41,10 @@ def getwishItemById(request, id):
             
 @permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'DELETE'])
-def getwishItemByUserId(request, user_id):
+def getwishItemByUserId(request, user):
    
     try:
-        wishlists = WishList.objects.filter(user_id=user_id)
+        wishlists = WishList.objects.filter(user=user)
     except WishList.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
@@ -61,10 +61,10 @@ def getwishItemByUserId(request, user_id):
 
 @permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'DELETE'])
-def getwishItemByProductId(request, product_id):
+def getwishItemByProductId(request, product):
    
     try:
-        wishlists = WishList.objects.filter(product_id = product_id)
+        wishlists = WishList.objects.filter(product = product)
     except WishList.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
