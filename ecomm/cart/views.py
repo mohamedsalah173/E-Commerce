@@ -115,16 +115,7 @@ def getCartItemsById(request, id):
              return Response(cartitems.errors)
          
 
-@api_view(['GET'])
-def getCartItemsByCartId(request, cart):
-    try:
-        cartitems = CartItems.objects.get(cart=cart)
-    except CartItems.DoesNotExist:
-        return Response("notfound")
-    if request.method == 'GET':
-        permission_classes = [AllowAny]
-        serializer = cartItemsSerializers(cartitems)
-        return JsonResponse(serializer.data)
+
     
     
     
@@ -162,16 +153,3 @@ def getCartItemsByCartId(request, cart):
         permission_classes = [AllowAny]
         serializer = cartItemsSerializers(cart_items, many=True)
         return JsonResponse(serializer.data, safe=False)
-   
-    
-@api_view(['GET'])
-def getCartItemsByCartId(request, cart):
-    try:
-        cart_items = CartItems.objects.filter(cart=cart)
-    except CartItems.DoesNotExist:
-        return Response("notfound")
-    if request.method == 'GET':
-        permission_classes = [AllowAny]
-        serializer = cartItemsSerializers(cart_items, many=True)
-        return JsonResponse(serializer.data,safe=False)    
-    
