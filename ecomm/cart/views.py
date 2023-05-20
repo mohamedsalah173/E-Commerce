@@ -123,7 +123,7 @@ def getCartItemsByCartId(request, cart):
         return Response("notfound")
     if request.method == 'GET':
         permission_classes = [AllowAny]
-        serializer = cartItemsSerializers(cartitems)
+        serializer = cartItemsSerializers(cartitems,many=True)
         return JsonResponse(serializer.data)
     
     
@@ -135,7 +135,7 @@ def getCartByUserId(request,user):
     except Cart.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
-        serializer = cartSerializers(cart)
+        serializer = cartSerializers(cart,many=True)
         return JsonResponse(serializer.data)
     
 # @api_view(['GET'])

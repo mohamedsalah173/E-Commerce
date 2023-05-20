@@ -1,34 +1,47 @@
+from django.shortcuts import render
 from django.http import JsonResponse
-from .serializers import wishListSerializers
-from .models import WishList
+from .serializer import wishListsSerializers
+from .models import WishLists
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 
+
+@permission_classes([IsAdminUser, IsAuthenticated])
+@api_view(['GET'])
+def getAllwishList(request):   
+    try:
+        wishlist =WishLists.objects.all()
+    except WishLists.DoesNotExist:
+        return Response("notfound")
+    serializer = wishListsSerializers(wishlist, many=True)
+    return Response(serializer.data)
+
+
 @permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['POST', 'GET'])
 def add_wishListItem(request):
     print(request.data)
-    serializer = wishListSerializers(data=request.data)
+    serializer = wishListsSerializers(data=request.data)
     if serializer.is_valid():
         serializer.save()
         data = serializer.data
         return JsonResponse({'data': data})
     else:
         return Response(serializer.errors)
-
+    
 @permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'PUT', 'DELETE'])
 def getwishItemById(request, id):
     permission_classes = [IsAdminUser|IsAuthenticated]
     try:
-        wishlist = WishList.objects.get(id=id)
+        wishlist = WishLists.objects.get(id=id)
     except WishList.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
         permission_classes = [AllowAny]
-        serializer = wishListSerializers(wishlist)
+        serializer = wishListsSerializers(wishlist)
         return JsonResponse(serializer.data)
                   
     if request.method == 'DELETE':
@@ -38,17 +51,18 @@ def getwishItemById(request, id):
              
           except:
              return Response(wishlist.errors)
-            
+
+
 @permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'DELETE'])
 def getwishItemByUserId(request, user):
    
     try:
-        wishlists = WishList.objects.filter(user=user)
+        wishlists = WishLists.objects.filter(user=user)
     except WishList.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
-        serializer = wishListSerializers(wishlists, many=True)
+        serializer = wishListsSerializers(wishlists, many=True)
         return Response(serializer.data)
                   
     if request.method == 'DELETE':
@@ -58,17 +72,19 @@ def getwishItemByUserId(request, user):
              
           except:
              return Response(wishlists.errors)   
-
+         
+         
+         
 @permission_classes([IsAdminUser, IsAuthenticated])
 @api_view(['GET', 'DELETE'])
 def getwishItemByProductId(request, product):
    
     try:
-        wishlists = WishList.objects.filter(product = product)
+        wishlists = WishLists.objects.filter(product = product)
     except WishList.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
-        serializer = wishListSerializers(wishlists, many=True)
+        serializer = wishListsSerializers(wishlists, many=True)
         return Response(serializer.data)
                   
     if request.method == 'DELETE':
@@ -79,13 +95,4 @@ def getwishItemByProductId(request, product):
           except:
              return Response(wishlists.errors)   
 
-
-@permission_classes([IsAdminUser, IsAuthenticated])
-@api_view(['GET'])
-def getAllwishList(request):   
-    try:
-        wishlist =WishList.objects.all()
-    except WishList.DoesNotExist:
-        return Response("notfound")
-    serializer = wishListSerializers(wishlist, many=True)
-    return Response(serializer.data)
+# Create your views here.
