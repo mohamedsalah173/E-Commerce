@@ -2,6 +2,9 @@ from datetime import timedelta
 from pathlib import Path, os
 import environ
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 env = environ.Env()
 environ.Env.read_env()
 
@@ -37,13 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'rest_framework.authtoken',
+    'cloudinary_storage',
+    'cloudinary',
+    'corsheaders',
     'user',
     'order',
     'payment',
-    
-
 ]
 
 MIDDLEWARE = [
@@ -94,20 +97,11 @@ DATABASES = {
     'default': dj_database_url.parse(env('DATABASE_URL'))
 }
 
-# user = os.environ.get('DB_USER')
-# password = os.environ.get('DB_PASSWORD')
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'Django',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
-#         'USER': user,
-#         'PASSWORD': password,
-#     }
-# }
-
+CLOUDINARY_STORAGE = {
+  'CLOUD_NAME': "dyfwbiuro",
+  'API_KEY': "256796272761344",
+  'API_SECRET': "OI6qP7VDTmWSWSFPaXeFHEoNi7o"
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -147,7 +141,9 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 
 # Default primary key field type

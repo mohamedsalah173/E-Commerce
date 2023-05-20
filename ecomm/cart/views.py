@@ -138,7 +138,7 @@ def getCartByUserId(request,user):
         serializer = cartSerializers(cart)
         return JsonResponse(serializer.data)
     
-@api_view(['GET'])
+# @api_view(['GET'])
 
 @api_view(['GET'])
 def getCartItemsByProductId(request, product,cart):
