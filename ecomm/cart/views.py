@@ -115,28 +115,19 @@ def getCartItemsById(request, id):
              return Response(cartitems.errors)
          
 
-@api_view(['GET'])
-def getCartItemsByCartId(request, cart):
-    try:
-        cartitems = CartItems.objects.get(cart=cart)
-    except CartItems.DoesNotExist:
-        return Response("notfound")
-    if request.method == 'GET':
-        permission_classes = [AllowAny]
-        serializer = cartItemsSerializers(cartitems,many=True)
-        return JsonResponse(serializer.data)
+
     
     
     
 @api_view(['GET','DELETE'])   
 def getCartByUserId(request,user):
     try:
-        cart = Cart.objects.get(user=user)
+        cart = Cart.objects.filter(user=user)
     except Cart.DoesNotExist:
         return Response("notfound")
     if request.method == 'GET':
         serializer = cartSerializers(cart,many=True)
-        return JsonResponse(serializer.data)
+        return JsonResponse(serializer.data,safe=False)
     
 # @api_view(['GET'])
 
@@ -164,14 +155,5 @@ def getCartItemsByCartId(request, cart):
         return JsonResponse(serializer.data, safe=False)
    
     
-@api_view(['GET'])
-def getCartItemsByCartId(request, cart):
-    try:
-        cart_items = CartItems.objects.filter(cart=cart)
-    except CartItems.DoesNotExist:
-        return Response("notfound")
-    if request.method == 'GET':
-        permission_classes = [AllowAny]
-        serializer = cartItemsSerializers(cart_items, many=True)
-        return JsonResponse(serializer.data,safe=False)    
+   
     
