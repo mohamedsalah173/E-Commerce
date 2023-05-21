@@ -21,12 +21,11 @@ SHIPPING_STATUS = [
 class Order(models.Model):
 
     transaction_id = models.UUIDField(default=uuid.uuid4, editable=False)
-    shipping = models.CharField(max_length=1, choices=SHIPPING_STATUS, default='P', null=False)
+    shipping = models.CharField(choices=SHIPPING_STATUS, default='P', null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(UserBase, on_delete=models.CASCADE, null=True, related_name='orders')
     delivered_date = models.DateTimeField(default=timezone.now() + timedelta(days=3), editable=False)
-
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
     def __str__(self):
         return f'{self.shipping} -- {self.transaction_id}'
 

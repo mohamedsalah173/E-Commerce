@@ -4,23 +4,22 @@ from rest_framework.exceptions import NotFound
 from rest_framework import status, generics
 from rest_framework import serializers
 from django.db.models import F, Sum
+from django.shortcuts import redirect
 from .models import Order, OrderItems
 from .serializers import OrderSerializers, OrderItemsSerializers
 from cart.models import Cart, CartItems
+from user.models import UserBase
+from rest_framework.permissions import IsAuthenticated
 # from django.core.exceptions import ValidationError
 
 
-
 class OrderList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializers
-    
+    queryset = Order.objects.all()
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated:
-            return Order.objects.filter(user=user)
-        else:
-            return Order.objects.none()
-
+        return Order.objects.filter(user=user)
     
 class AddOrder(generics.ListCreateAPIView):
     
@@ -41,30 +40,34 @@ class AddOrder(generics.ListCreateAPIView):
 class AddOrderItem(generics.ListCreateAPIView):
     serializer_class = OrderSerializers
     
-    def get_queryset(self):
-        return Order.objects.all()
+    # def get_queryset(self):
+    #     return Order.objects.all()
 
-    def post(self, request):
-        if not request.user.is_authenticated:
-            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-
+    def get(self, request):
+        # if not request.user.is_authenticated:
+        #     return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        user=self.request.GET.get('user')
+        print('user=',user)
         try:
-            cart = Cart.objects.get(user=request.user)
+            cart = Cart.objects.get(user=user)
         except Cart.DoesNotExist:
             return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
         total_price = 0
-        cart_items = cart.items.all()
+        cart_items = CartItems.objects.filter(cart=cart.id)
+        print("caaaaaaaaaaaaart=",cart_items)
         for cart_item in cart_items:
             item_total = cart_item.product.price * cart_item.quantity
             total_price += item_total
             
+        user = UserBase.objects.get(id=user)    
         # Create an order
-        order = Order(user=request.user, status='Pending', total_price=total_price)
+        
+        order = Order(user=user, shipping='Pending', total_price=total_price)
         order.save()
 
         # Retrieve cart items and add them to the order
-        cart_items = cart.products.all()
+        # cart_items = cart.products.all()
         for cart_item in cart_items:
             order_item = OrderItems(product=cart_item.product, quantity=cart_item.quantity, order=order)
             order_item.save()
@@ -75,10 +78,11 @@ class AddOrderItem(generics.ListCreateAPIView):
             product.save()
 
         # Clear the cart
-        cart.items.all().delete()
+        cart_items.delete()
 
         serializer = OrderSerializers(order)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return redirect('http://localhost:3000/order')
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class OrderItemsList(APIView):

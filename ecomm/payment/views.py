@@ -14,13 +14,16 @@ import json
 stripe.api_key = settings.STRIP_SECRETE_KEY
 
 class StripeCheckOutView(APIView):
-    permission_classes = [IsAuthenticated]
-    print(IsAuthenticated)
-    print('-------------------------')
+    # permission_classes = [IsAuthenticated]
+    
     def post(self, request):
-        user_info = json.loads(request.body)
-        user_id = user_info.get('user_id')
-        cart = Cart.objects.get(user_id=user_id)
+        base_url = request.scheme + '://' + request.get_host()
+        user= self.request.GET.get('user')
+        # user_id = user_info.get('user_id')
+        print(user)
+        print('------------')
+        cart = Cart.objects.get(user=user)
+        print(cart)
         cart_items = CartItems.objects.filter(cart=cart)
         line_items = []
         for item in cart_items:
@@ -43,8 +46,8 @@ class StripeCheckOutView(APIView):
                 line_items=line_items,
                 mode='payment',
                 # success_url=settings.SITE_URL + '/?success=true/' + 'session_id={CHECKOUT_SESSION_ID}',
-                success_url=settings.SITE_URL + '/order',
-                cancel_url=settings.SITE_URL  + '?canceled=true',
+                success_url=base_url + f'/order/add-item?user={user}',
+                cancel_url=base_url  + '?canceled=true',
                 
             )
             return redirect(checkout_session.url)
